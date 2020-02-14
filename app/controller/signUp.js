@@ -7,6 +7,19 @@ const signUp = {
     getVilidateCode: async (ctx, next) => {
         let { email } = ctx.request.body
         if (pattern.test(email)) {
+            let user = await User.findAll({
+                where:{
+                    account:email
+                }
+            })
+            if(user){
+                ctx.body = {
+                    isSuccess:false,
+                    data:null,
+                    errorMsg:'该邮箱已被注册'
+                }
+                return 
+            }
             async function sendMail() {
                 let transporter = nodemailer.createTransport({
                     host: 'smtp.office365.com',
